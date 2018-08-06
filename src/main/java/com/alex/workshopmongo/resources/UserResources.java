@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,18 +22,15 @@ public class UserResources {
 	private UserService service;
 
 	@RequestMapping(method=RequestMethod.GET)
-	// o de cima ou @GetMapping
-	public ResponseEntity<List<UserDTO>> findAll(){
-		
-//		User alex = new User("1", "Alex Neto", "alex@gmail.com");
-//		User marcio = new User("2", "Marcio Neto", "marcio@gmail.com");		
+	public ResponseEntity<List<UserDTO>> findAll(){	
 		List<User> users = service.findAll();
-		List<UserDTO> listDto = users.stream().map(x->new UserDTO(x)).collect(Collectors.toList());
-//		users.addAll(Arrays.asList(alex,marcio));
-//		users.add(alex);
-//		users.add(marcio);
-		
+		List<UserDTO> listDto = users.stream().map(x->new UserDTO(x)).collect(Collectors.toList());	
 		return ResponseEntity.ok().body(listDto);
 	}
-
+	
+	@RequestMapping(value= "/{id}", method=RequestMethod.GET)
+	public ResponseEntity<UserDTO> findById(@PathVariable String id){
+		User obj = service.findById(id);		
+		return ResponseEntity.ok().body(new UserDTO(obj));
+	}
 }
